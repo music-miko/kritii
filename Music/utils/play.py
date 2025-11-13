@@ -174,7 +174,7 @@ class Player:
         if not que:
             return await message.edit_text("Nothing is playing to replay")
         video = True if que["vc_type"] == "video" else False
-        photo = thumb.generate(video_id)
+        photo = thumb.generate(que["video_id"])
         if que["file"] == que["video_id"]:
             file_path = await ytube.download(que["video_id"], True, video)
         else:
