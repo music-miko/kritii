@@ -76,26 +76,3 @@ class thumb:
         except Exception as e:
             print("Thumbnail Error:", e)
             return None
-    # Fallback → HQ thumbnail
-    if r.status_code != 200:
-        url = f"https://i.ytimg.com/vi/{video_id}/hqdefault.jpg"
-        r = requests.get(url, stream=True)
-
-    img = Image.open(BytesIO(r.content)).convert("RGB")
-
-    os.makedirs("cache", exist_ok=True)
-    path = f"cache/thumb-{video_id}.jpg"
-    img.save(path, "JPEG")
-
-    return path
-
-
-class thumb:
-    @staticmethod
-    def generate(video: str, *args, **kwargs) -> str:
-        """Bot-compatible wrapper: thumb.generate(video_id)"""
-        try:
-            return _download_thumbnail(video)
-        except Exception as e:
-            print("Thumbnail Error:", e)
-            return None
