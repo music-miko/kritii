@@ -48,32 +48,32 @@ class Database(object):
             "join_date": datetime.datetime.now().strftime("%d-%m-%Y %H:%M"),
             "songs_played": 0,
         }
-        await self.users.insert_one(context)
+        await self.tgusersdb.insert_one(context)
 
     async def delete_user(self, user_id: int):
-        await self.users.delete_one({"user_id": user_id})
+        await self.tgusersdb.delete_one({"user_id": user_id})
 
     async def is_user_exist(self, user_id: int) -> bool:
-        user = await self.users.find_one({"user_id": user_id})
+        user = await self.tgusersdb.find_one({"user_id": user_id})
         return bool(user)
 
     async def get_user(self, user_id: int):
-        user = await self.users.find_one({"user_id": user_id})
+        user = await self.tgusersdb.find_one({"user_id": user_id})
         return user
 
     async def get_all_users(self):
-        users = self.users.find({})
+        users = self.tgusersdb.find({})
         return users
 
     async def total_users_count(self):
-        count = await self.users.count_documents({})
+        count = await self.tgusersdb.count_documents({})
         return count
 
     async def update_user(self, user_id: int, key: str, value):
         if key == "songs_played":
             prev = await self.users.find_one({"user_id": user_id})
             value = prev[key] + value
-        await self.users.update_one({"user_id": user_id}, {"$set": {key: value}})
+        await self.tgusersdb.update_one({"user_id": user_id}, {"$set": {key: value}})
 
     # chat db #
     async def add_chat(self, chat_id: int):
