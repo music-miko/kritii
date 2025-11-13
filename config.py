@@ -21,7 +21,7 @@ class Config(object):
     
     # optional config variables
     BLACK_IMG = getenv("BLACK_IMG", "https://files.catbox.moe/jwc4b6.jpg")        # black image for progress
-    BOT_NAME = getenv("BOT_NAME", "\x40\x4d\x75\x73\x69\x63\x5f\x48\x65\x6c\x6c\x42\x6f\x74")   # dont put fancy texts here.
+    BOT_NAME = getenv("BOT_NAME", "Arc Music")   # dont put fancy texts here.
     BOT_PIC = getenv("BOT_PIC", "https://files.catbox.moe/b64xz8.jpg")           # put direct link to image here
     LEADERBOARD_TIME = getenv("LEADERBOARD_TIME", "4:00")   # time in 24hr format for leaderboard broadcast
     LYRICS_API = getenv("LYRICS_API", None)             # from https://docs.genius.com/
