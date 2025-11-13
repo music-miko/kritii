@@ -6,8 +6,8 @@ from youtubesearchpython import VideosSearch
 
 
 def _extract_video_id(link: str) -> str:
-    """Extract YouTube video ID safely from any link or raw ID."""
-    link = link.strip()
+    """Extract YouTube video ID safely from any string."""
+    link = str(link).strip()
 
     if "v=" in link:
         return link.split("v=")[-1].split("&")[0]
@@ -18,10 +18,12 @@ def _extract_video_id(link: str) -> str:
 
 
 def _download_thumbnail(video: str) -> str:
-    """Internal helper: download raw YouTube thumbnail only."""
+    """Download raw YouTube thumbnail only (no branding)."""
 
-    # If text query → search YouTube
-    if "youtu" not in video:
+    video = str(video).strip()     # 🔥 FIX: ensure string always
+
+    # If it's not a YouTube link → treat as search query
+    if "youtube.com" not in video and "youtu.be" not in video and len(video) != 11:
         data = VideosSearch(video, limit=1).result().get("result", [])
         if not data:
             raise Exception("No search results found.")
@@ -29,18 +31,17 @@ def _download_thumbnail(video: str) -> str:
     else:
         video_id = _extract_video_id(video)
 
-    # Try max resolution
+    # Try maxres thumbnail
     url = f"https://i.ytimg.com/vi/{video_id}/maxresdefault.jpg"
     r = requests.get(url, stream=True)
 
-    # If unavailable, fallback to HQ
+    # Fallback → HQ thumbnail
     if r.status_code != 200:
         url = f"https://i.ytimg.com/vi/{video_id}/hqdefault.jpg"
         r = requests.get(url, stream=True)
 
     img = Image.open(BytesIO(r.content)).convert("RGB")
 
-    # Save output
     os.makedirs("cache", exist_ok=True)
     path = f"cache/thumb-{video_id}.jpg"
     img.save(path, "JPEG")
@@ -48,17 +49,10 @@ def _download_thumbnail(video: str) -> str:
     return path
 
 
-# -----------------------------
-# CLASS EXPECTED BY YOUR BOT
-# -----------------------------
 class thumb:
     @staticmethod
     def generate(video: str, *args, **kwargs) -> str:
-        """
-        Wrapper for compatibility with:
-        from Music.utils.thumbnail import thumb
-        thumb.generate(...)
-        """
+        """Bot-compatible wrapper: thumb.generate(video_id)"""
         try:
             return _download_thumbnail(video)
         except Exception as e:
