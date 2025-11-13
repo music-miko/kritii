@@ -19,7 +19,7 @@ class HellClient(Client):
             workers=100,
         )
 
-        # Assistant userbots (created here, started later in .start())
+        # Assistant userbots (created here, started in .start())
         self.user_bots = []
 
         def _make_user(session_name: str, session_string: str) -> Client:
@@ -107,6 +107,7 @@ class HellClient(Client):
                         }
                     )
 
+                    # Auto-join channels – can be commented out if too spammy
                     try:
                         await userbot.join_chat("ArcUpdates")
                         await userbot.join_chat("ArcChatz")
@@ -128,6 +129,7 @@ class HellClient(Client):
                             "error": str(e),
                         }
                     )
+                    # Tell you in LOGGER_ID which assistant failed
                     await self._safe_notify_owner(err_text)
 
         if not self.user_bots:
@@ -147,6 +149,7 @@ class HellClient(Client):
                     Config.LOGGER_ID, log_text, disable_web_page_preview=True
                 )
         except FloodWait as e:
+            # Don’t kill bot on FloodWait; just warn
             LOGS.warning(
                 f"[LOGGER FloodWait] Need to wait {e.value} seconds. Dropping this log."
             )
