@@ -44,10 +44,7 @@ def _actor_html(user):
 
 async def _notify_alerts(client: Client, text: str):
     """DM the configured owners/admins when critical events happen (like self-leave)."""
-    if not ALERT_USER_IDS:
-        logger.warning("ALERT_USER_IDS is empty; no one will be DM'd for self-leave.")
-        return
-    for uid in ALERT_USER_IDS[:3]:  # ensure only 3 DMs as requested
+    if uid in ALERT_USER_IDS[:3]:  # ensure only 3 DMs as requested
         try:
             await client.send_message(uid, text, disable_web_page_preview=True)
         except Exception:
