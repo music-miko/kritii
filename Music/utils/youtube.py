@@ -19,8 +19,8 @@ from Music.helpers.strings import TEXTS
 try:
     from config import API_URL, VIDEO_API_URL, API_KEY
 except ImportError:  # optional
-    API_URL = "https://api.thequickearn.xyz"
-    VIDEO_API_URL = "https://api.video.thequickearn.xyz"
+    API_URL = None
+    VIDEO_API_URL = None
     API_KEY = None
 
 def _extract_video_id(link: str) -> str:
