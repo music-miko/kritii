@@ -14,14 +14,8 @@ from config import Config
 from Music.core.clients import hellbot
 from Music.core.logger import LOGS
 from Music.helpers.strings import TEXTS
+from config import API_URL, VIDEO_API_URL, API_KEY
 
-# Try to import external API config (optional)
-try:
-    from config import API_URL, VIDEO_API_URL, API_KEY
-except ImportError:  # optional
-    API_URL = None
-    VIDEO_API_URL = None
-    API_KEY = None
 
 def _extract_video_id(link: str) -> str:
     """
