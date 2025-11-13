@@ -85,7 +85,7 @@ def generate(video_id: str, dark: bool = False) -> str:
 
     # --------------------------
     # FROSTED GLASS OVERLAY BOX
-    --------------------------
+    # --------------------------
     overlay = Image.new("RGBA", base_image.size, (0, 0, 0, 0))
     glass = Image.new("RGBA", (700, 350), (255, 255, 255, 60))
     glass = glass.filter(ImageFilter.GaussianBlur(4))
