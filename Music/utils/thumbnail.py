@@ -32,7 +32,7 @@ def _download_thumbnail(video: str) -> str:
         video_id = _extract_video_id(video)
 
     # Try maxres thumbnail
-    url = f"https://i.ytimg.com/vi/{video_id}/maxresdefault.jpg"
+    url = f"https://i.ytimg.com/vi/{video_id}/hqdefault.jpg"
     r = requests.get(url, stream=True)
 
     # Fallback → HQ thumbnail
