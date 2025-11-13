@@ -71,10 +71,16 @@ class Database(object):
 
     async def update_user(self, user_id: int, key: str, value):
         if key == "songs_played":
-            prev = await self.tgusersdb.find_one({"user_id": user_id})
-            value = prev[key] + value
-        await self.tgusersdb.update_one({"user_id": user_id}, {"$set": {key: value}})
+            prev = await self.tgusersdb.find_one({"user_id": user_id}) or {}
+            current = prev.get("songs_played", 0)
+            value = current + value
 
+        await self.tgusersdb.update_one(
+            {"user_id": user_id},
+            {"$set": {key: value}},
+            upsert=True,  # optional, but helpful so doc always exists
+            )
+        
     # chat db #
     async def add_chat(self, chat_id: int):
         context = {
