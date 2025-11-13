@@ -5,22 +5,22 @@ from PIL import Image
 from youtubesearchpython import VideosSearch
 
 
-def _extract_video_id(link: str) -> str:
+def extract_id(link: str) -> str:
+    """Extract video ID from link or return raw."""
     link = str(link).strip()
 
     if "v=" in link:
         return link.split("v=")[-1].split("&")[0]
+
     if "youtu.be/" in link:
         return link.split("youtu.be/")[-1].split("?")[0]
 
-    return link  # raw ID fallback
+    return link
 
 
-def _get_best_thumbnail_url(video_id: str) -> str:
-    """Try multiple resolutions until a valid thumbnail is found."""
-
-    # Order of YouTube thumbnail fallbacks
-    candidates = [
+def get_best_thumbnail(video_id: str) -> str:
+    """Try all YouTube thumbnail resolutions until one works."""
+    urls = [
         f"https://i.ytimg.com/vi/{video_id}/maxresdefault.jpg",
         f"https://i.ytimg.com/vi/{video_id}/hq720.jpg",
         f"https://i.ytimg.com/vi/{video_id}/sddefault.jpg",
@@ -28,38 +28,34 @@ def _get_best_thumbnail_url(video_id: str) -> str:
         f"https://i.ytimg.com/vi/{video_id}/default.jpg",
     ]
 
-    for url in candidates:
+    for url in urls:
         r = requests.get(url, stream=True)
         if r.status_code == 200:
             return url
 
-    raise Exception("No valid thumbnail found")
+    raise Exception("No working thumbnail found.")
 
 
-def _download_thumbnail(video: str) -> str:
+def download_thumb(video: str) -> str:
     video = str(video).strip()
 
-    # Search query support
+    # If it's not a YouTube link or ID → treat as search query
     if (
-        "youtube.com" not in video
-        and "youtu.be" not in video
+        "youtu" not in video
         and len(video) != 11
         and not video.isnumeric()
     ):
-        data = VideosSearch(video, limit=1).result().get("result", [])
-        if not data:
+        results = VideosSearch(video, limit=1).result().get("result", [])
+        if not results:
             raise Exception("No search results found.")
-        video_id = data[0]["id"]
+        video_id = results[0]["id"]
     else:
-        video_id = _extract_video_id(video)
+        video_id = extract_id(video)
 
-    # Get working thumbnail
-    url = _get_best_thumbnail_url(video_id)
-    r = requests.get(url, stream=True)
+    url = get_best_thumbnail(video_id)
+    response = requests.get(url, stream=True)
+    img = Image.open(BytesIO(response.content)).convert("RGB")
 
-    img = Image.open(BytesIO(r.content)).convert("RGB")
-
-    # Save output
     os.makedirs("cache", exist_ok=True)
     path = f"cache/thumb-{video_id}.jpg"
     img.save(path, "JPEG")
@@ -70,9 +66,9 @@ def _download_thumbnail(video: str) -> str:
 class thumb:
     @staticmethod
     def generate(video: str, *args, **kwargs) -> str:
-        """Compatible wrapper"""
+        """Bot-compatible wrapper"""
         try:
-            return _download_thumbnail(video)
+            return download_thumb(video)
         except Exception as e:
             print("Thumbnail Error:", e)
             return None
