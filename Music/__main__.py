@@ -1,3 +1,4 @@
+import uvloop
 from pyrogram import idle
 
 from config import Config
@@ -72,4 +73,5 @@ async def start_bot():
 
 
 if __name__ == "__main__":
+    uvloop.install()
     hellbot.run(start_bot())
