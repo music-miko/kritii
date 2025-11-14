@@ -8,7 +8,7 @@ from .logger import LOGS
 
 class HellClient:
     def __init__(self):
-        # Bot client
+        # ----------------- BOT CLIENT -----------------
         self.app = Client(
             "HellMusic",
             api_id=Config.API_ID,
@@ -18,11 +18,11 @@ class HellClient:
             workers=100,
         )
 
-        # --- MULTI ASSISTANT SUPPORT (UP TO 4) ---
-        # Collect all session strings that exist in Config
+        # ----------------- MULTI ASSISTANTS (UP TO 4) -----------------
+        # Collect all session strings from Config
         session_strings = []
 
-        # Old / primary session (backwards compatible)
+        # Primary assistant (backwards compatible)
         if getattr(Config, "HELLBOT_SESSION", None):
             session_strings.append(Config.HELLBOT_SESSION)
 
@@ -84,6 +84,19 @@ class HellClient:
             LOGS.info(">> No assistant sessions configured (HELLBOT_SESSION*).")
 
         LOGS.info(">> Booted up HellMusic!")
+
+    async def stop(self):
+        # Graceful shutdown for all clients
+        try:
+            await self.app.stop()
+        except Exception:
+            pass
+
+        for u in getattr(self, "users", []):
+            try:
+                await u.stop()
+            except Exception:
+                pass
 
     async def logit(self, hash: str, log: str, file: str = None):
         log_text = f"#{hash.upper()} \n\n{log}"
