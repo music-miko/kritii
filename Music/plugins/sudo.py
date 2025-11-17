@@ -232,7 +232,7 @@ async def restart_(_, message: Message):
     await hell.edit(
         f"Notified **{count}** chat(s) about the restart.\n\nRestarting now..."
     )
-    os.system(f"kill -9 {os.getpid()} && bash StartMusic")
+    os.system(f"kill -9 {os.getpid()} && bash start")
 
 
 @hellbot.app.on_message(filters.command("sudolist") & Config.SUDO_USERS)
