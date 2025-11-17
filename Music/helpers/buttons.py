@@ -201,6 +201,16 @@ class MakeButtons:
         ]
         return buttons
 
+
+
+    def add_markup(self):
+        buttons = [
+            [
+                self.ikb(text="Add me ➕", url=f"https://t.me/{BOT_USERNAME}?startgroup=true"),
+            ]
+        ]
+        return buttons
+        
     def source_markup(self):
         buttons = [
             [
@@ -215,7 +225,7 @@ class MakeButtons:
     def start_markup(self, username: str):
         buttons = [
             [
-                self.ikb(text="Start Me 🎵", url=f"https://t.me/{username}?startgroup=true"),
+                self.ikb(text="Start Me 🎵", url=f"https://t.me/{username}?start=start"),
             ]
         ]
         return buttons
