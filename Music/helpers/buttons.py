@@ -203,10 +203,10 @@ class MakeButtons:
 
 
 
-    def add_markup(self):
+    def add_markup(self, username: str):
         buttons = [
             [
-                self.ikb(text="Add me ➕", url=f"https://t.me/{BOT_USERNAME}?startgroup=true"),
+                self.ikb(text="Add Me To Group 👥", url=f"https://t.me/{username}?startgroup=true"),
             ]
         ]
         return buttons
