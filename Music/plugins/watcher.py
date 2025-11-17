@@ -159,7 +159,7 @@ async def leaderboard():
         "client": hellbot.app,
     }
     text = await leaders.generate(context)
-    btns = Buttons.add_markup()
+    btns = Buttons.add_markup(hellbot.app.username)
     await leaders.broadcast(hellbot, text, btns)
 
 
